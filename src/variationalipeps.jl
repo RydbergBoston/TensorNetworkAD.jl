@@ -49,8 +49,8 @@ a `SquareCTMRGRuntime` `rt`.
 function expectationvalue(h, ap, rt::SquareCTMRGRuntime) where T
     corner, edge = rt.corner, rt.edge
     ap /= norm(ap)
-    l = ein"ab,ica,bde,cjfdlm,eg,gfk -> ijklm"(corner,edge,edge,ap,corner,edge)
-    e = ein"abcij,abckl,ijkl -> "(l,l,h)[]
+    l = ein"(((ab,ica),(eg,bde)),gfk),cjfdlm -> ijklm"(corner,edge,corner,edge,edge,ap)
+    e = ein"(abcij,ijkl),abckl-> "(l,h,l)[]
     n = ein"ijkaa,ijkbb -> "(l,l)[]
     return e/n
 end

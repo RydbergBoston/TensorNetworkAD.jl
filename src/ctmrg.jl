@@ -127,17 +127,17 @@ function ctmrgstep(rt::SquareCTMRGRuntime, vals)
     # grow
     bulk, corner, edge = rt.bulk, rt.corner, rt.edge
     D, χ = getD(rt), getχ(rt)
-    cp = ein"ad,iba,dcl,jkcb -> ijlk"(corner, edge, edge, bulk)
+    cp = ein"((ad,iba),dcl),jkcb -> ijlk"(corner, edge, edge, bulk)
     tp = ein"iam,jkla -> ijklm"(edge,bulk)
 
     # renormalize
     cpmat = reshape(cp, χ*D, χ*D)
     cpmat += adjoint(cpmat)
-    u, s, v = svd(cpmat)
+    u, s, v = BackwardsLinalg.svd(cpmat)
     z = reshape(u[:, 1:χ], χ, D, χ)
 
-    corner = ein"abcd,abi,cdj -> ij"(cp, conj(z), z)
-    edge = ein"abjcd,abi,dck -> ijk"(tp, conj(z), z)
+    corner = ein"(abcd,abi),cdj -> ij"(cp, conj(z), z)
+    edge = ein"(abjcd,abi),dck -> ijk"(tp, conj(z), z)
 
     vals = s ./ s[1]
 

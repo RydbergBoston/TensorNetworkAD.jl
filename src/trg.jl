@@ -1,6 +1,4 @@
 # using OMEinsum
-using BackwardsLinalg
-
 @doc raw"
     trg(a, χ, niter)
 
@@ -25,7 +23,7 @@ function trg(a::AbstractArray{T,4}, χ, niter; tol::Float64 = 1e-16) where T
         dr, ul = trg_svd(dr_ul, χ, tol)
         ld, ru = trg_svd(ld_ru, χ, tol)
 
-        a = ein"npu,por,dom,lmn -> urdl"(dr,ld,ul,ru)
+        a = ein"(npu,por),(dom,lmn) -> urdl"(dr,ld,ul,ru)
     end
     trace = ein"ijij -> "(a)[]
     lnZ += log(trace)/2.0^niter
@@ -36,7 +34,7 @@ end
 function trg_svd(t, dmax, tol)
     d1, d2, d3, d4 = size(t)
     tmat = reshape(t, d1*d2, d3*d4)
-    u, s, v = svd(tmat)
+    u, s, v = BackwardsLinalg.svd(tmat)
     dmax = min(searchsortedfirst(s, tol, rev=true), dmax, length(s))
     FS = s[1:dmax]
     sqrtFSp = sqrt.(FS)

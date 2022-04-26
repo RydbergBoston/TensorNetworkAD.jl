@@ -17,7 +17,7 @@ true
 function tensorfromclassical(ham::Matrix)
     wboltzmann = exp.(ham)
     q = sqrt(wboltzmann)
-    ein"ij,ik,il,im -> jklm"(q,q,q,q)
+    ein"((ij,ik),il),im -> jklm"(q,q,q,q)
 end
 
 
@@ -31,7 +31,7 @@ function model_tensor(::Ising, β::Real)
     a = reshape(Float64[1 0 0 0; 0 0 0 0; 0 0 0 0; 0 0 0 1], 2,2,2,2)
     cβ, sβ = sqrt(cosh(β)), sqrt(sinh(β))
     q = 1/sqrt(2) * [cβ+sβ cβ-sβ; cβ-sβ cβ+sβ]
-    ein"abcd,ai,bj,ck,dl -> ijkl"(a,q,q,q,q)
+    ein"(((abcd,ai),bj),ck),dl -> ijkl"(a,q,q,q,q)
 end
 
 """
@@ -44,7 +44,7 @@ function mag_tensor(::Ising, β)
     a = reshape(Float64[1 0 0 0; 0 0 0 0; 0 0 0 0; 0 0 0 -1] , 2,2,2,2)
     cβ, sβ = sqrt(cosh(β)), sqrt(sinh(β))
     q = 1/sqrt(2) * [cβ+sβ cβ-sβ; cβ-sβ cβ+sβ]
-    ein"abcd,ai,bj,ck,dl -> ijkl"(a,q,q,q,q)
+    ein"(((abcd,ai),bj),ck),dl -> ijkl"(a,q,q,q,q)
 end
 
 """
@@ -60,8 +60,8 @@ function magnetisation(model::MT, β, χ) where {MT <: HamiltonianModel}
     rt = SquareCTMRGRuntime(a, Val(:random), χ)
     env = ctmrg(rt; tol=1e-6, maxit=100)
     corner, edge = env.corner, env.edge
-    ctc  = ein"ia,ajb,bk -> ijk"(corner,edge,corner)
-    env  = ein"alc,ckd,bjd,bia -> ijkl"(ctc,edge,ctc,edge)
+    ctc  = ein"(ia,ajb),bk -> ijk"(corner,edge,corner)
+    env  = ein"(alc,ckd),(bjd,bia) -> ijkl"(ctc,edge,ctc,edge)
     mag  = ein"ijkl,ijkl ->"(env,m)[]
     norm = ein"ijkl,ijkl ->"(env,a)[]
 

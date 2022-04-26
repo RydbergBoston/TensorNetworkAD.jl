@@ -3,7 +3,7 @@ using TensorNetworkAD
 using TensorNetworkAD: diaglocalhamiltonian, energy, expectationvalue, optimiseipeps,
                        hamiltonian, indexperm_symmetrize, num_grad
 using OMEinsum, Zygote, Random
-using LinearAlgebra: svd, norm
+using LinearAlgebra.norm
 using Optim, LineSearches
 
 @testset "non-interacting" begin
@@ -54,7 +54,7 @@ end
     h = zeros(2,2,2,2)
     h[1,1,2,2] = h[2,2,1,1] = 1
     h[2,2,2,2] = h[1,1,1,1] = -1
-    randu, s,  = svd(randn(2,2))
+    randu, s,  = BackwardsLinalg.svd(randn(2,2))
     h = ein"(((abcd,ai),bj),ck),dl -> ijkl"(h,randu,randu',randu,randu')
     ipeps = SquareIPEPS(randn(2,2,2,2,2))
     a = indexperm_symmetrize(ipeps)
