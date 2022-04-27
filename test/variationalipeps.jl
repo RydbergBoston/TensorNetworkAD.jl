@@ -3,7 +3,7 @@ using TensorNetworkAD
 using TensorNetworkAD: diaglocalhamiltonian, energy, expectationvalue, optimiseipeps,
                        hamiltonian, indexperm_symmetrize, num_grad
 using OMEinsum, Zygote, Random
-using LinearAlgebra.norm
+using LinearAlgebra: norm
 using Optim, LineSearches
 
 @testset "non-interacting" begin
