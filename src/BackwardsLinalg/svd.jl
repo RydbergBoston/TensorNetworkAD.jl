@@ -7,8 +7,11 @@ mpow2(a::AbstractArray) = a .^ 2
 """
 function svd(A)
 	U, S, V = LinearAlgebra.svd(A)
-	return U, S, Matrix(V)
+	return U, S, match_type(V, U)
 end
+
+match_type(m::LinearAlgebra.Transpose, ::Matrix) = Matrix(m)
+match_type(m::LinearAlgebra.Adjoint, ::Matrix) = Matrix(m)
 
 """
     svd_back(U, S, V, dU, dS, dV)

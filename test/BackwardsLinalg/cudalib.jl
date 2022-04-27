@@ -50,14 +50,13 @@ end
     end
 end
 
-@testset "mpow2, trtrs!" begin
+@testset "trtrs!" begin
     Random.seed!(3)
     for T in [Float32, Float64, ComplexF32, ComplexF64]
         bv = randn(T, 5) |> CuArray
         bm = randn(T, 5, 5) |> CuArray
         for b in [bv, bm]
             a = randn(T, 5,5) |> CuArray
-            @test eltype(res) == T
             res = trtrs!('U', 'N', 'N', copy(a), copy(b))
             @test Array(res) ≈ trtrs!('U', 'N', 'N', Matrix(a), Array(b))
             @test eltype(res) == T

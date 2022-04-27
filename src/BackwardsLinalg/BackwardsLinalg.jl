@@ -1,6 +1,5 @@
 module BackwardsLinalg
 import LinearAlgebra
-using Requires
 
 struct ZeroAdder end
 Base.:+(a, zero::ZeroAdder) = a
@@ -14,8 +13,5 @@ include("svd.jl")
 include("rsvd.jl")
 include("symeigen.jl")
 include("zygote.jl")
-
-function __init__()
-    @require CUDA="052768ef-5323-5732-b1bb-66c8b64840ba" include("cudalib.jl")
-end
+include("cudalib.jl")
 end

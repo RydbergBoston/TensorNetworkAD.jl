@@ -24,7 +24,7 @@ end
 @testset "svd grad V" begin
     function loss_v(A)
         M, N = size(A)
-        U, S, V = svd(A)
+        U, S, V = BackwardsLinalg.svd(A)
         Random.seed!(2)
         H = randn(ComplexF64, N, N)
         H+=H'
@@ -43,7 +43,7 @@ end
 @testset "svd grad U,V" begin
     function loss_uv(A)
         M, N = size(A)
-        U, S, V = svd(A)
+        U, S, V = BackwardsLinalg.svd(A)
         psi = V[1,1]
         psi_l = U[1,1]
         real(conj(psi_l)*psi)[]
@@ -60,7 +60,7 @@ end
 @testset "svd grad U,V imag diag" begin
     function loss_uv(A)
         M, N = size(A)
-        U, S, V = svd(A)
+        U, S, V = BackwardsLinalg.svd(A)
         psi = V[1,1]
         psi_l = U[1,1]
         real(conj(psi_l)*psi)[]
@@ -78,7 +78,7 @@ end
 
 @testset "svd grad S" begin
     function loss(A)
-        U, S, V = svd(A)
+        U, S, V = BackwardsLinalg.svd(A)
         S |> sum
     end
 
